@@ -179,6 +179,12 @@ namespace BookStore.Logic
             }
         }
 
+        /// <summary>
+        /// Add book to the storage
+        /// </summary>
+        /// <param name="item">Book to add</param>
+        /// <exception cref="ArgumentNullException">Throws when item is null</exception>
+        /// <exception cref="ArgumentException">Throws when you try to add the book to the storage twice</exception>
         public void AddBook(Book item)
         {
             if(item == null)
@@ -189,6 +195,12 @@ namespace BookStore.Logic
             books.Add(item);
         }
 
+        /// <summary>
+        /// Remove book from the storage
+        /// </summary>
+        /// <param name="item">Book to remove</param>
+        /// <exception cref="ArgumentNullException">Throws when item is null</exception>
+        /// <exception cref="ArgumentException">Throws when you try to remove the missing book from the storage</exception>
         public void RemoveBook(Book item)
         {
             if (item == null)
@@ -199,6 +211,12 @@ namespace BookStore.Logic
             books.Remove(item);
         }
 
+        /// <summary>
+        /// Find book by tag
+        /// </summary>
+        /// <param name="tag">Predicate to find</param>
+        /// <returns>Book if there are such book in the storage. nul, otherwise</returns>
+        /// <exception cref="ArgumentNullException">Throws when tag is null</exception>
         public Book FindBookByTag(Predicate<Book> tag)
         {
             if (tag == null)
@@ -207,6 +225,11 @@ namespace BookStore.Logic
             return books.Find(tag);
         }
 
+        /// <summary>
+        /// Sort book by tag
+        /// </summary>
+        /// <param name="cmp">Comparision to sort</param>
+        /// <exception cref="ArgumentNullException">Throws when cmp is null</exception>
         public void SortBooksByTag(Comparison<Book> cmp)
         {
             if (cmp == null)
@@ -215,20 +238,30 @@ namespace BookStore.Logic
             books.Sort(cmp);
         }
 
-        public void SaveTo(IBookListStorage storage)
+        /// <summary>
+        /// Save this storage to the repo
+        /// </summary>
+        /// <param name="repo">The repo to store</param>
+        /// <exception cref="ArgumentNullException">Throws when repo is null</exception>
+        public void SaveTo(IBookListStorage repo)
         {
-           if (storage == null)
-                throw new ArgumentNullException($"{nameof(storage)} must be not null");
+           if (repo == null)
+                throw new ArgumentNullException($"{nameof(repo)} must be not null");
 
-            storage.WriteBooks(books);
+            repo.WriteBooks(books);
         }
 
-        public void LoadFrom(IBookListStorage storage)
+        /// <summary>
+        /// Load books from the repo
+        /// </summary>
+        /// <param name="repo">The repo to load from</param>
+        /// <exception cref="ArgumentNullException">Throws when repo is null</exception>
+        public void LoadFrom(IBookListStorage repo)
         {
-            if (storage == null)
-                throw new ArgumentNullException($"{nameof(storage)} must be not null");
+            if (repo == null)
+                throw new ArgumentNullException($"{nameof(repo)} must be not null");
 
-            books = new List<Book>(storage.ReadBooks());
+            books = new List<Book>(repo.ReadBooks());
         }
 
         public IEnumerator<Book> GetEnumerator()
@@ -246,11 +279,24 @@ namespace BookStore.Logic
     {
         public readonly string path;
 
+        /// <summary>
+        /// Get/create new binary storage for books
+        /// </summary>
+        /// <param name="currentPath">Path to binary file</param>
         public BinaryStorage(string currentPath)
         {
             path = currentPath;
         }
 
+        /// <summary>
+        /// Read all books from the binary file
+        /// </summary>
+        /// <returns>Collection of books</returns>
+        /// <exception cref="FileNotFoundException">Throws when there isn't file with <see cref="path"/> name</exception>
+        /// <exception cref="IOException">Throws when is something wrong with you</exception>
+        /// <exception cref="ArgumentException">Throws when is something wrong with you</exception>
+        /// <exception cref="ArgumentNullException">Throws when is something wrong with you</exception>
+        /// <exception cref="ObjectDisposedException">Throws when is something wrong with you</exception>
         public IEnumerable<Book> ReadBooks()
         {
             List<Book> storage = new List<Book>();
@@ -269,6 +315,15 @@ namespace BookStore.Logic
             return storage;
         }
 
+        /// <summary>
+        /// Write all books to the binary file
+        /// </summary>
+        /// <param name="collection">Book collection to write</param>
+        /// <exception cref="FileNotFoundException">Throws when there isn't file with <see cref="path"/> name</exception>
+        /// <exception cref="IOException">Throws when is something wrong with you</exception>
+        /// <exception cref="ArgumentException">Throws when is something wrong with you</exception>
+        /// <exception cref="ArgumentNullException">Throws when is something wrong with you</exception>
+        /// <exception cref="ObjectDisposedException">Throws when is something wrong with you</exception>
         public void WriteBooks(IEnumerable<Book> collection)
         {
             using (var write = new BinaryWriter(new FileStream(path, FileMode.OpenOrCreate)))
