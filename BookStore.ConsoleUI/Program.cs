@@ -18,6 +18,9 @@ namespace BookStore.ConsoleUI
             Book harryPotterAndTheGobletOfFire = new Book("J. K. Rowling", "Harry Potter and the Goblet of Fire", 2000, "Fantasy", 636);
 
             BinaryStorage byn = new BinaryStorage("books.bin");
+            XmlStorage xml = new XmlStorage("books.xml");
+            BinarySerializationStorage bss = new BinarySerializationStorage("books.dat");
+            
             BookListService service = new BookListService();
 
             service.AddBook(holyBible);
@@ -26,6 +29,8 @@ namespace BookStore.ConsoleUI
             service.AddBook(harryPotterAndTheGobletOfFire);
 
             service.SaveTo(byn);
+            service.SaveTo(xml);
+            service.SaveTo(bss);
 
             var bookByTag = service.FindBookByTag(t => t.Genre == "Dystopian");
             Console.WriteLine(bookByTag);
@@ -33,7 +38,7 @@ namespace BookStore.ConsoleUI
             bookByTag = service.FindBookByTag(t => t.Genre == "Dystopian");
             Console.WriteLine(bookByTag);
 
-            service.LoadFrom(byn);
+            service.LoadFrom(bss);
 
             service.SortBooksByTag((t1, t2) => t1.PublishingYear > t2.PublishingYear ? 1 : -1);
 

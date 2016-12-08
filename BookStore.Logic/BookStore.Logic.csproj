@@ -40,7 +40,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Book.cs" />
+    <Compile Include="BinarySerializationStorage.cs" />
+    <Compile Include="BookStore.cs" />
+    <Compile Include="BinaryStorage.cs" />
+    <Compile Include="XMLStorage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
